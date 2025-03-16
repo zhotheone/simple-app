@@ -24,7 +24,7 @@ const App = () => {
   // Memoize fetchRatings to prevent recreation on every render
   const fetchRatings = useCallback(async () => {
     try {
-      const response = await axios.get('https://legendary-twilight-e565d6.netlify.app/api/ratings', {
+      const response = await axios.get('https://simple-app-murex.vercel.app/api/ratings', {
         params: {
           userId,
           filter: JSON.stringify(filter),
