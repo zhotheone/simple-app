@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -22,16 +21,10 @@ const App = () => {
     }
   }, []);
 
-  // Fetch ratings when userId, filter, or page changes
-  useEffect(() => {
-    if (userId) {
-      fetchRatings();
-    }
-  }, [userId, filter, currentPage]);
-
-  const fetchRatings = async () => {
+  // Memoize fetchRatings to prevent recreation on every render
+  const fetchRatings = useCallback(async () => {
     try {
-      const response = await axios.get('https://your-backend-domain.com/api/ratings', {
+      const response = await axios.get('https://legendary-twilight-e565d6.netlify.app/api/ratings', {
         params: {
           userId,
           filter: JSON.stringify(filter),
@@ -44,7 +37,14 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching ratings:', error);
     }
-  };
+  }, [userId, filter, currentPage]); // Dependencies of fetchRatings
+
+  // Fetch ratings when userId, filter, or page changes
+  useEffect(() => {
+    if (userId) {
+      fetchRatings();
+    }
+  }, [userId, filter, currentPage, fetchRatings]); // Include fetchRatings in dependency array
 
   const handleFilterChange = (key, value) => {
     setFilter((prev) => ({
